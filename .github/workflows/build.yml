@@ -24,7 +24,8 @@ jobs:
       - name: Check for changes in PlayPro/CoreProtect
         id: check
         run: |
-          CURRENT_SHA=$(git ls-remote https://github.com/PlayPro/CoreProtect.git refs/heads/master | cut -f1)
+          # 改为检查 development 分支
+          CURRENT_SHA=$(git ls-remote https://github.com/PlayPro/CoreProtect.git refs/heads/development | cut -f1)
           echo "Current SHA: $CURRENT_SHA"
           if [ -f .last_sha ]; then
             LAST_SHA=$(cat .last_sha)
@@ -59,7 +60,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: PlayPro/CoreProtect
-          ref: master
+          ref: development  # 改为 development 分支
           fetch-depth: 0
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -93,10 +94,10 @@ jobs:
           tag: ${{ steps.datetime.outputs.datetime }}
           name: "${{ steps.datetime.outputs.display_time }}"
           body: |
-            Automated Build
+            Automated Build (Development Branch)
             Build Information:
             - Time: ${{ steps.datetime.outputs.display_time }} (UTC+8)
-            - Source: PlayPro/CoreProtect
+            - Source: PlayPro/CoreProtect (development branch)
             - Commit: ${{ needs.check-changes.outputs.latest-sha }}
           draft: false
           prerelease: true
