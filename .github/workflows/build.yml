@@ -55,18 +55,12 @@ jobs:
     needs: check-changes
     if: needs.check-changes.outputs.has-changes == 'true'
     steps:
-      # 使用 git clone 而不是 actions/checkout，避免目录冲突
       - name: Clone PlayPro/CoreProtect
         run: git clone --branch master https://github.com/PlayPro/CoreProtect ./coreprotect-src
-      
-      # 安全地修改 pom.xml - 只修改分支参数，保持原始版本号
       - name: Patch pom.xml for compatibility
         working-directory: ./coreprotect-src
         run: |
-          # 备份原始文件
           cp pom.xml pom.xml.backup
-          
-          # 精确修改分支参数（避免影响版本号）
           sed -i 's|<project.branch>[^<]*</project.branch>|<project.branch>master</project.branch>|' pom.xml
           
           echo "修改后的项目配置："
